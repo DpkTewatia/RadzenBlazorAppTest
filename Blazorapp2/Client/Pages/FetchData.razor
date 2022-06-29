@@ -1,0 +1,103 @@
+﻿@page "/fetchdata"
+@using Blazorapp2.Shared
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (forecasts == null)
+{
+    <p><em> Thoda Sbr rkho sir </em></p>
+}
+else
+{
+    <RadzenDataGrid Data="@forecasts" TItem="WeatherForecast" AllowFiltering="true" AllowColumnResize="true"  AllowSorting="true" PageSize="10" AllowPaging="true" AllowColumnPicking="true" >
+        <Columns>
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="Data" Title="Date" TextAlign="TextAlign.Center">
+            <Template Context="forecast"> @forecast.Date.ToShortDateString() 
+                  
+            </Template> 
+         
+         </RadzenDataGridColumn>
+         
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="TemperatureC" Title="Temp.(C)" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="TemperatureF" Title="Temp.(F)" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="Summary" Title="Summary" TextAlign="TextAlign.Center"/>
+              
+              
+                   
+                  
+        </Columns>
+    </RadzenDataGrid>
+
+    <RadzenChart>
+        <RadzenLineSeries Data="@forecasts" CategoryProperty="Date" Title="Temp. (C)" LineType="LineType.Solid" ValueProperty="TemperatureC">
+            <RadzenMarkers MarkerType="MarkerType.Circle" />
+        </RadzenLineSeries>
+
+        <RadzenLineSeries Data="@forecasts" CategoryProperty="Date" Title="Temp. (F)" LineType="LineType.Solid" ValueProperty="TemperatureF">
+            <RadzenMarkers MarkerType="MarkerType.Diamond" />
+        </RadzenLineSeries>
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Temperature" /> 
+        </RadzenValueAxis>
+    </RadzenChart>
+
+    <RadzenChart>
+        <RadzenLineSeries Data="@forecasts" CategoryProperty="Date" Title="Temp. (C)" LineType="LineType.Solid" ValueProperty="TemperatureC">
+            <RadzenMarkers MarkerType="MarkerType.Square" />
+        </RadzenLineSeries>
+          <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Temperature" /> 
+        </RadzenValueAxis>
+
+    </RadzenChart>
+
+    <RadzenChart>
+        <RadzenLineSeries Data="@forecasts" CategoryProperty="Date" Title="Temp. (F)" LineType="LineType.Solid" ValueProperty="TemperatureF">
+            <RadzenMarkers MarkerType="MarkerType.Triangle" />
+        </RadzenLineSeries>
+          <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Temperature" /> 
+        </RadzenValueAxis>
+
+    </RadzenChart>
+
+    
+    @*<table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+    }
+}
